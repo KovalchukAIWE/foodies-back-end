@@ -4,7 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 
-import e from "cors";
+import usersRouter from "./routes/usersRouter.js";
 
 const { DB_HOST, PORT } = process.env;
 
@@ -15,12 +15,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-app.use("/api/users");
-app.use("/api/categories");
-app.use("/api/areas");
-app.use("/api/ingredients");
-app.use("/api/testimonials");
-app.use("/api/recipes");
+app.use("/api/users", usersRouter);
+// app.use("/api/categories");
+// app.use("/api/areas");
+// app.use("/api/ingredients");
+// app.use("/api/testimonials");
+// app.use("/api/recipes");
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
