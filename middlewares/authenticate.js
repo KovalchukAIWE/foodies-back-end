@@ -1,6 +1,6 @@
 import HttpError from "../helpers/HttpError.js";
 import { verifyToken } from "../helpers/jwt.js";
-import { finduser } from "../services/authServices.js";
+import { findUser } from "../services/usersServices.js";
 
 const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
@@ -15,10 +15,10 @@ const authenticate = async (req, res, next) => {
 
   try {
     const { id } = verifyToken(token);
-    // const user = await finduser({ _id: id });
-    // if (!user) {
-    //   return next(HttpError(401, "User not found"));
-    // }
+    const user = await findUser({ _id: id });
+    if (!user) {
+      return next(HttpError(401, "User not found"));
+    }
 
     if (!user.token) {
       return next(HttpError(401, "Not authorized"));
