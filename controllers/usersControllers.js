@@ -46,6 +46,7 @@ const signIn = async (req, res) => {
   res.json({
     token,
     user: {
+      id: user._id,
       name: user.name,
       email: user.email,
     },
@@ -53,8 +54,9 @@ const signIn = async (req, res) => {
 };
 
 const getCurrent = (req, res) => {
-  const { name, email } = req.user;
+  const { _id: id, name, email } = req.user;
   res.json({
+    id,
     name,
     email,
   });
@@ -120,6 +122,112 @@ const addAvatar = async (req, res) => {
   }
 };
 
+const getUserFollowers = async (req, res) => {
+  const userFollowers = [...req.user.followers];
+  const fields = "-token -createdAt -updatedAt -password";
+
+  const userFollowersList = await usersService.findManyByIds(
+    [...userFollowers],
+    fields
+  );
+  res.json(userFollowersList);
+};
+
+const getUserFollowings = async (req, res) => {
+  const userFollowings = [...req.user.following];
+  const fields = "-token -createdAt -updatedAt -password";
+
+  const userFollowingsList = await usersService.findManyByIds(
+    userFollowings,
+    fields
+  );
+  res.json(userFollowingsList);
+};
+
+const addToFollowings = async (req, res) => {
+  const { _id, following: followList } = req.user;
+  const { id } = req.body;
+
+  if (followList.includes(id)) {
+    throw HttpError(400, "Following is already exist");
+  }
+  const userToFollow = await usersService.findUser({ _id: id });
+
+  if (!userToFollow) {
+    throw HttpError(404, "Not found");
+  }
+
+  const result = await usersService.updateUser(
+    { _id },
+    { following: [...followList, id] }
+  );
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+  const addToFollowers = await usersService.updateUser(
+    { _id: id },
+    { followers: [...userToFollow.followers, _id] }
+  );
+  if (!addToFollowers) {
+    throw HttpError(404, "Not found");
+  }
+  res.json({
+    follow: {
+      id,
+      name: userToFollow.name,
+      email: userToFollow.email,
+    },
+  });
+};
+
+const removeFromFollowings = async (req, res) => {
+  const { _id, following: followList } = req.user;
+  const { id } = req.body;
+
+  const followIndex = followList.findIndex((el) => el.toString() === id);
+
+  if (followIndex < 0) {
+    throw HttpError(400, "Following not found");
+  }
+  const userToUnfollow = await usersService.findUser({ _id: id });
+
+  if (!userToUnfollow) {
+    throw HttpError(404, "Not found");
+  }
+
+  followList.splice(followIndex, 1);
+
+  const result = await usersService.updateUser(
+    { _id },
+    { following: [...followList] }
+  );
+
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+  const followerIndex = userToUnfollow.followers.findIndex(
+    (el) => el.toString() === _id.toString()
+  );
+
+  if (followerIndex < 0) {
+    throw HttpError(400, "Follower not found");
+  }
+  userToUnfollow.followers.splice(followerIndex, 1);
+
+  await usersService.updateUser(
+    { _id: id },
+    { followers: [...userToUnfollow.followers] }
+  );
+
+  res.json({
+    unfollow: {
+      id,
+      name: userToUnfollow.name,
+      email: userToUnfollow.email,
+    },
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signIn: ctrlWrapper(signIn),
@@ -127,4 +235,8 @@ export default {
   signOut: ctrlWrapper(signOut),
   getUserById: ctrlWrapper(getUserById),
   addAvatar: ctrlWrapper(addAvatar),
+  getUserFollowers: ctrlWrapper(getUserFollowers),
+  getUserFollowings: ctrlWrapper(getUserFollowings),
+  addToFollowings: ctrlWrapper(addToFollowings),
+  removeFromFollowings: ctrlWrapper(removeFromFollowings),
 };
