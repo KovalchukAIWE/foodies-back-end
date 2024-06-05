@@ -23,15 +23,19 @@ const userSchema = new Schema(
     },
     followers: {
       type: [Schema.Types.ObjectId],
+      ref: "user",
     },
     following: {
       type: [Schema.Types.ObjectId],
+      ref: "user",
     },
     ownRecipes: {
       type: [Schema.Types.ObjectId],
+      ref: "recipe",
     },
     favoriteRecipes: {
       type: [Schema.Types.ObjectId],
+      ref: "recipe",
     },
     token: {
       type: String,
