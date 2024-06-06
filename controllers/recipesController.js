@@ -56,7 +56,30 @@ const getPopularRecipes = async (req, res) => {
 
 const addRecipe = async (req, res) => {
   const { _id: owner } = req.user;
-  const newRecipe = await recipesService.addRecipe({ ...req.body, owner });
+  const { file } = req;
+  let thumb = null;
+
+  if (!file) {
+    throw HttpError(400, "File is required");
+  }
+
+  try {
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: "foodies_recipes",
+    });
+    thumb = result.secure_url;
+
+    await fs.unlink(file.path);
+  } catch (error) {
+    await fs.unlink(file.path);
+    throw HttpError(400, "File not uploaded");
+  }
+
+  const newRecipe = await recipesService.addRecipe({
+    ...req.body,
+    owner,
+    thumb,
+  });
   res.status(201).json(newRecipe);
 };
 
@@ -121,10 +144,7 @@ const removeRecipeFromFavorites = async (req, res) => {
 };
 
 const getFavoriteRecipes = async (req, res) => {
-  const user = await User.findById(req.user._id).populate({
-    path: "favoriteRecipes",
-    populate: { path: "category ingredients.id area" },
-  });
+  const user = await User.findById(req.user._id).populate("favoriteRecipes");
   res.json(user.favoriteRecipes);
 };
 
