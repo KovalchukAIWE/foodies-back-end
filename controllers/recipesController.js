@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import * as recipesService from "../services/recipesServices.js";
+import * as usersService from "../services/usersServices.js";
 import User from "../models/User.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
@@ -7,6 +8,7 @@ import cloudinary from "../helpers/cloudinary.js";
 
 const getAllRecipes = async (req, res) => {
   const { category, ingredient, area, page = 1, limit = 20 } = req.query;
+
   const filter = {};
 
   if (category) {
@@ -68,11 +70,10 @@ const addRecipe = async (req, res) => {
       folder: "foodies_recipes",
     });
     thumb = result.secure_url;
-
-    await fs.unlink(file.path);
   } catch (error) {
-    await fs.unlink(file.path);
     throw HttpError(400, "File not uploaded");
+  } finally {
+    await fs.unlink(file.path);
   }
 
   const newRecipe = await recipesService.addRecipe({
@@ -86,6 +87,7 @@ const addRecipe = async (req, res) => {
 const deleteRecipe = async (req, res) => {
   const { _id: owner } = req.user;
   const { id: _id } = req.params;
+
   const recipes = await recipesService.removeRecipe({ _id, owner });
   if (!recipes) {
     throw HttpError(404, "Recipe not found");
@@ -128,18 +130,24 @@ const addFavoriteRecipe = async (req, res) => {
 };
 
 const removeRecipeFromFavorites = async (req, res) => {
-  const { _id: owner } = req.user;
+  const { _id: owner, favoriteRecipes: favList } = req.user;
   const { id: _id } = req.params;
 
-  const user = await User.findById(owner);
-  if (user.favoriteRecipes.includes(_id)) {
-    user.favoriteRecipes = user.favoriteRecipes.filter(
-      (favId) => favId.toString() !== _id
-    );
-    await user.save();
-    await recipesService.decrementFavoriteCount(_id);
+  const favIndex = favList.findIndex((el) => el.toString() === _id);
+  if (favIndex < 0) {
+    throw HttpError(400, "Recipe not found");
+  }
+  favList.splice(favIndex, 1);
+  const result = await usersService.updateUser(
+    { _id: owner },
+    { favoriteRecipes: [...favList] }
+  );
+
+  if (!result) {
+    throw HttpError(404, "Not found");
   }
 
+  await recipesService.decrementFavoriteCount(_id);
   res.json({ message: "Recipe removed from favorites" });
 };
 

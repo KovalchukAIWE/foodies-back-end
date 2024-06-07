@@ -3,10 +3,6 @@ import Recipe from "../models/Recipe.js";
 export const listRecipes = (search = {}) => {
   const { filter = {}, fields = "", settings = {} } = search;
 
-  if (filter.ingredients) {
-    filter.ingredients = { $elemMatch: filter.ingredients };
-  }
-
   return Recipe.find(filter, fields, settings);
 };
 
