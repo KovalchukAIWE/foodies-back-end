@@ -29,10 +29,6 @@ const userSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "user",
     },
-    ownRecipes: {
-      type: [Schema.Types.ObjectId],
-      ref: "recipe",
-    },
     favoriteRecipes: {
       type: [Schema.Types.ObjectId],
       ref: "recipe",

@@ -11,8 +11,14 @@ import normalizeFields from "../middlewares/normalizeFields.js";
 const recipeRouter = express.Router();
 
 recipeRouter.get("/", normalizeFields, recipesController.getAllRecipes);
-recipeRouter.get("/:id", isValidId, recipesController.getRecipeById);
 recipeRouter.get("/popular", recipesController.getPopularRecipes);
+recipeRouter.get(
+  "/favorites",
+  authenticate,
+  recipesController.getFavoriteRecipes
+);
+recipeRouter.get("/my", authenticate, recipesController.getMyRecipes);
+recipeRouter.get("/:id", isValidId, recipesController.getRecipeById);
 
 recipeRouter.post(
   "/",
@@ -29,8 +35,6 @@ recipeRouter.delete(
   recipesController.deleteRecipe
 );
 
-recipeRouter.get("/my", authenticate, recipesController.getMyRecipes);
-
 recipeRouter.post(
   "/:id/favorite",
   authenticate,
@@ -41,11 +45,6 @@ recipeRouter.delete(
   authenticate,
   isValidId,
   recipesController.removeRecipeFromFavorites
-);
-recipeRouter.get(
-  "/favorites",
-  authenticate,
-  recipesController.getFavoriteRecipes
 );
 
 export default recipeRouter;

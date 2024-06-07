@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import * as usersService from "../services/usersServices.js";
+import * as recipesService from "../services/recipesServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import compareHash from "../helpers/compareHash.js";
@@ -69,23 +70,36 @@ const signOut = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const user = req.user;
+  const {
+    _id: id,
+    avatar,
+    name,
+    email,
+    favoriteRecipes,
+    followers,
+    following,
+  } = req.user;
   const { id: requestId } = req.params;
 
-  if (user._id === requestId) {
+  if (id.toString() === requestId) {
+    const ownRecipes = await recipesService.countAllRecipes({ owner: id });
+
     res.json({
       user: {
-        avatar: user.avatar,
-        name: user.name,
-        email: user.email,
-        ownRecipesCount: user.ownRecipes.length,
-        favoriteRecipesCount: user.favoriteRecipes.length,
-        followersCount: user.followers.length,
-        followingCount: user.following.length,
+        avatar: avatar,
+        name: name,
+        email: email,
+        ownRecipesCount: ownRecipes,
+        favoriteRecipesCount: favoriteRecipes.length,
+        followersCount: followers.length,
+        followingCount: following.length,
       },
     });
   } else {
     const requestUser = await usersService.findUser({ _id: requestId });
+    const userRecipes = await recipesService.countAllRecipes({
+      owner: requestId,
+    });
 
     res.json({
       user: {
@@ -93,8 +107,8 @@ const getUserById = async (req, res) => {
         avatar: requestUser.avatar,
         name: requestUser.name,
         email: requestUser.email,
-        ownRecipesCount: requestUser.ownRecipes.length,
-        followersCount: user.followers.length,
+        ownRecipesCount: userRecipes,
+        followersCount: requestUser.followers.length,
       },
     });
   }

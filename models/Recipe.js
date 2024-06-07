@@ -1,6 +1,21 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, setUpdateSettings } from "./hooks.js";
 
+const recipeIngredientsSchema = new Schema(
+  {
+    id: {
+      type: Schema.Types.ObjectId,
+      ref: "ingredient",
+      required: true,
+    },
+    measure: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
 const recipeSchema = new Schema(
   {
     title: {
@@ -35,19 +50,7 @@ const recipeSchema = new Schema(
       type: String,
       required: [true, "Set time for recipe"],
     },
-    ingredients: [
-      {
-        id: {
-          type: Schema.Types.ObjectId,
-          ref: "Ingredient",
-          required: true,
-        },
-        measure: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    ingredients: [recipeIngredientsSchema],
 
     favoriteCount: {
       type: Number,
