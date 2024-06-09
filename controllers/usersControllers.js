@@ -16,8 +16,18 @@ const signup = async (req, res) => {
 
   const newUser = await usersService.saveUser({ ...req.body });
 
+  const { _id: id } = newUser;
+  const payload = {
+    id,
+  };
+
+  const token = createToken(payload);
+  await usersService.updateUser({ _id: id }, { token });
+
   res.status(201).json({
+    token,
     user: {
+      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
     },
