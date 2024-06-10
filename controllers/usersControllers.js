@@ -67,9 +67,11 @@ const signIn = async (req, res) => {
 const getCurrent = (req, res) => {
   const { _id: id, name, email } = req.user;
   res.json({
-    id,
-    name,
-    email,
+    user: {
+      id,
+      name,
+      email,
+    },
   });
 };
 
@@ -180,18 +182,22 @@ const addToFollowings = async (req, res) => {
   if (!userToFollow) {
     throw HttpError(404, "Not found");
   }
-
+  followList.push(id);
   const result = await usersService.updateUser(
     { _id },
-    { following: [...followList, id] }
+    { following: followList }
   );
   if (!result) {
     throw HttpError(404, "Not found");
   }
+
+  userToFollow.followers.push(_id);
+
   const addToFollowers = await usersService.updateUser(
     { _id: id },
-    { followers: [...userToFollow.followers, _id] }
+    { followers: userToFollow.followers }
   );
+
   if (!addToFollowers) {
     throw HttpError(404, "Not found");
   }
