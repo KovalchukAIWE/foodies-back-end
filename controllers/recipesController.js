@@ -126,7 +126,9 @@ const addFavoriteRecipe = async (req, res) => {
     await recipesService.incrementFavoriteCount(_id);
   }
 
-  res.json({ message: "Recipe added to favorites" });
+  const recipe = await recipesService.getRecipe({ _id });
+
+  res.json(recipe);
 };
 
 const removeRecipeFromFavorites = async (req, res) => {
@@ -148,11 +150,18 @@ const removeRecipeFromFavorites = async (req, res) => {
   }
 
   await recipesService.decrementFavoriteCount(_id);
-  res.json({ message: "Recipe removed from favorites" });
+  const recipe = await recipesService.getRecipe({ _id });
+
+  res.json(recipe);
 };
 
 const getFavoriteRecipes = async (req, res) => {
-  const user = await User.findById(req.user._id).populate("favoriteRecipes");
+  const { _id: owner } = req.user;
+
+  const user = await User.findOne({ _id: owner }).populate("favoriteRecipes");
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
   res.json(user.favoriteRecipes);
 };
 
