@@ -3,7 +3,7 @@ import { handleSaveError, setUpdateSettings } from "./hooks.js";
 
 const recipeIngredientsSchema = new Schema(
   {
-    id: {
+    ingredientId: {
       type: Schema.Types.ObjectId,
       ref: "ingredient",
       required: true,
