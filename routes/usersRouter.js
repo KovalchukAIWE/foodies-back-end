@@ -31,28 +31,21 @@ usersRouter.get("/current", authenticate, usersControllers.getCurrent);
 
 usersRouter.post("/signout", authenticate, usersControllers.signOut);
 
+usersRouter.get("/followers", authenticate, usersControllers.getUserFollowers);
+
+usersRouter.get(
+  "/followings",
+  authenticate,
+  usersControllers.getUserFollowings
+);
+
 usersRouter.get("/:id", authenticate, isValidId, usersControllers.getUserById);
 
 usersRouter.patch(
-  "/:id/avatar",
+  "/avatar",
   authenticate,
-  isValidId,
   upload.single("avatar"),
   usersControllers.addAvatar
-);
-
-usersRouter.get(
-  "/:id/followers",
-  authenticate,
-  isValidId,
-  usersControllers.getUserFollowers
-);
-
-usersRouter.get(
-  "/:id/followings",
-  authenticate,
-  isValidId,
-  usersControllers.getUserFollowings
 );
 
 usersRouter.patch(
