@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const recipeIngredientsSchema = Joi.object({
-  ingredientId: Joi.string().required(),
+  id: Joi.string().required(),
   measure: Joi.string().required(),
 });
 
@@ -12,9 +12,7 @@ const createRecipeSchema = Joi.object({
   description: Joi.string().required(),
   time: Joi.string().required(),
 
-
   ingredients: Joi.array().items(recipeIngredientsSchema).required(),
-
 });
 
 export default createRecipeSchema;
