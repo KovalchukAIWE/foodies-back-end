@@ -3,7 +3,7 @@ import { handleSaveError, setUpdateSettings } from "./hooks.js";
 
 const recipeIngredientsSchema = new Schema(
   {
-    id: {    
+    id: {
       type: Schema.Types.ObjectId,
       ref: "ingredient",
       required: true,
@@ -57,7 +57,7 @@ const recipeSchema = new Schema(
       default: 0,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
 
 recipeSchema.post("save", handleSaveError);
