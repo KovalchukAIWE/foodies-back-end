@@ -23,8 +23,8 @@ recipeRouter.get("/:id", isValidId, recipesController.getRecipeById);
 recipeRouter.post(
   "/",
   authenticate,
-  isEmptyBody,
   upload.single("thumb"),
+  isEmptyBody,
   validateBody(createRecipeSchema),
   recipesController.addRecipe
 );
