@@ -13,11 +13,11 @@ export const listRecipes = async (search = {}) => {
   return recipes.map((recipe) => ({
     _id: recipe._id,
     title: recipe.title,
-    description: recipe.description,
+    instructions: recipe.instructions,
     thumb: recipe.thumb,
     ownerName: recipe.owner.name,
     ownerAvatar: recipe.owner.avatar,
-    favorite: recipe.favoriteCount,
+    favorite: recipe.favoriteCount > 0,
   }));
 };
 
