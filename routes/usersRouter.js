@@ -49,18 +49,16 @@ usersRouter.patch(
 );
 
 usersRouter.patch(
-  "/:id/follow",
+  "/follow",
   authenticate,
-  isValidId,
   isEmptyBody,
   validateBody(followSchema),
   usersControllers.addToFollowings
 );
 
 usersRouter.patch(
-  "/:id/unfollow",
+  "/unfollow",
   authenticate,
-  isValidId,
   isEmptyBody,
   validateBody(followSchema),
   usersControllers.removeFromFollowings
