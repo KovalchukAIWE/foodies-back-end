@@ -60,6 +60,7 @@ const signIn = async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      avatar: user.avatar,
     },
   });
 };
@@ -71,6 +72,7 @@ const getCurrent = (req, res) => {
       id,
       name,
       email,
+      avatar,
     },
   });
 };
@@ -150,23 +152,19 @@ const addAvatar = async (req, res) => {
 
 const getUserFollowers = async (req, res) => {
   const userFollowers = [...req.user.followers];
+  const filter = { _id: userFollowers };
   const fields = "-token -createdAt -updatedAt -password";
 
-  const userFollowersList = await usersService.findManyByIds(
-    [...userFollowers],
-    fields
-  );
+  const userFollowersList = await usersService.findMany(filter, fields);
   res.json(userFollowersList);
 };
 
 const getUserFollowings = async (req, res) => {
   const userFollowings = [...req.user.following];
+  const filter = { _id: userFollowings };
   const fields = "-token -createdAt -updatedAt -password";
 
-  const userFollowingsList = await usersService.findManyByIds(
-    userFollowings,
-    fields
-  );
+  const userFollowingsList = await usersService.findMany(filter, fields);
   res.json(userFollowingsList);
 };
 

@@ -10,10 +10,16 @@ export const saveUser = async (data) => {
 
 export const updateUser = (filter, data) => User.findOneAndUpdate(filter, data);
 
-export const findManyByIds = (ids = [], fields = "") =>
-  User.find(
-    {
-      _id: { $in: ids },
-    },
-    fields
-  );
+export const updateUserProperty = (user) => user.save();
+
+export const findMany = (filter = {}, fields = "") => {
+  if (filter.ids) {
+    return User.find(
+      {
+        _id: { $in: filter.ids },
+      },
+      fields
+    );
+  }
+  return User.find(filter, fields);
+};
