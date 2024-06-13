@@ -1,9 +1,24 @@
 import Recipe from "../models/Recipe.js";
 
-export const listRecipes = (search = {}) => {
+export const listRecipes = async (search = {}) => {
   const { filter = {}, fields = "", settings = {} } = search;
 
-  return Recipe.find(filter, fields, settings);
+  const recipes = await Recipe.find(filter, fields, settings)
+    .populate({
+      path: "owner",
+      select: "name avatar",
+    })
+    .lean();
+
+  return recipes.map((recipe) => ({
+    _id: recipe._id,
+    title: recipe.title,
+    description: recipe.description,
+    thumb: recipe.thumb,
+    ownerName: recipe.owner.name,
+    ownerAvatar: recipe.owner.avatar,
+    favorite: recipe.favoriteCount,
+  }));
 };
 
 export const countAllRecipes = (filter) => Recipe.countDocuments(filter);

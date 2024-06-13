@@ -93,6 +93,16 @@ const deleteRecipe = async (req, res) => {
     throw HttpError(404, "Recipe not found");
   }
 
+  const filter = { favoriteRecipes: _id };
+  const users = await usersService.findMany(filter);
+
+  for (const user of users) {
+    user.favoriteRecipes = user.favoriteRecipes.filter(
+      (favId) => favId.toString() !== _id
+    );
+    await usersService.updateUserProperty(user);
+  }
+
   res.json(recipes);
 };
 
