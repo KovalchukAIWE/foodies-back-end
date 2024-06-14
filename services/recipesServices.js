@@ -1,6 +1,8 @@
 import Recipe from "../models/Recipe.js";
 import User from "../models/User.js";
+import Ingredient from "../models/Ingredient.js";
 import { verifyToken } from "../helpers/jwt.js";
+import mongoose from "mongoose";
 
 export const listRecipes = async (search = {}, authorization = null) => {
   const { filter = {}, fields = "", settings = {} } = search;
@@ -57,16 +59,65 @@ export const listRecipes = async (search = {}, authorization = null) => {
 export const countAllRecipes = (filter) => Recipe.countDocuments(filter);
 
 export const getRecipe = async (filter, authorization = null) => {
-  const recipe = await Recipe.findOne(filter)
-    .populate({
-      path: "owner",
-      select: "name avatar",
-    })
-    .lean();
+  const recipeId = filter._id;
+
+  const pipeline = [
+    { $match: { _id: new mongoose.Types.ObjectId(recipeId) } },
+    {
+      $lookup: {
+        from: "ingredients",
+        localField: "ingredients.id",
+        foreignField: "_id",
+        as: "ingredientDetails",
+      },
+    },
+    {
+      $addFields: {
+        ingredients: {
+          $map: {
+            input: "$ingredients",
+            as: "ingredient",
+            in: {
+              $let: {
+                vars: {
+                  ingredientDetail: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$ingredientDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$ingredient.id"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+                in: {
+                  _id: "$$ingredientDetail._id",
+                  name: "$$ingredientDetail.name",
+                  img: "$$ingredientDetail.img",
+                  measure: "$$ingredient.measure",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  ];
+
+  let recipe = await Recipe.aggregate(pipeline).exec();
+  recipe = recipe[0];
 
   if (!recipe) {
     return null;
   }
+
+  recipe = await Recipe.populate(recipe, {
+    path: "owner",
+    select: "name avatar",
+  });
 
   if (authorization) {
     const [bearer, token] = authorization.split(" ");
@@ -179,13 +230,14 @@ export const decrementFavoriteCount = async (id) => {
   return recipe;
 };
 
-export const getMyRecipesService = async (filter, fields, settings) => {
+export const getMyRecipesService = async ({ filter, fields, settings }) => {
   const recipes = await Recipe.find(filter, fields, settings).lean();
 
-  return recipes.map((recipe) => ({
+  const myRecipes = recipes.map((recipe) => ({
     _id: recipe._id,
     thumb: recipe.thumb,
     title: recipe.title,
     instructions: recipe.instructions,
   }));
+  return myRecipes;
 };
