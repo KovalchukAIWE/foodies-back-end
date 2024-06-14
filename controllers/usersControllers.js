@@ -162,7 +162,7 @@ const getUserFollowers = async (req, res) => {
     total: followers.length,
     page,
     limit,
-    followers: result.length > 0 ? result[0].followers : [],
+    result: result.length > 0 ? result[0].followers : [],
   });
 };
 
@@ -176,7 +176,7 @@ const getUserFollowings = async (req, res) => {
     total: following.length,
     page,
     limit,
-    followings: result.length > 0 ? result[0].followings : [],
+    result: result.length > 0 ? result[0].followings : [],
   });
 };
 
