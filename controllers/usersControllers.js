@@ -27,6 +27,7 @@ const signup = async (req, res) => {
   res.status(201).json({
     token,
     user: {
+      id,
       name: newUser.name,
       email: newUser.email,
     },
