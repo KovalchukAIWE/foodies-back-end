@@ -28,11 +28,14 @@ const getAllRecipes = async (req, res) => {
   const settings = { skip, limit: Number(limit) };
   const total = await recipesService.countAllRecipes(filter);
 
-  const result = await recipesService.listRecipes({
-    filter,
-    fields,
-    settings,
-  });
+  const result = await recipesService.listRecipes(
+    {
+      filter,
+      fields,
+      settings,
+    },
+    req.headers.authorization
+  );
 
   res.json({
     total,
@@ -44,7 +47,10 @@ const getAllRecipes = async (req, res) => {
 
 const getRecipeById = async (req, res) => {
   const { id: _id } = req.params;
-  const recipe = await recipesService.getRecipe({ _id });
+  const recipe = await recipesService.getRecipe(
+    { _id },
+    req.headers.authorization
+  );
   if (!recipe) {
     return res.status(404).json({ message: "Recipe not found" });
   }
@@ -52,7 +58,9 @@ const getRecipeById = async (req, res) => {
 };
 
 const getPopularRecipes = async (req, res) => {
-  const recipes = await recipesService.getPopularRecipes();
+  const recipes = await recipesService.getPopularRecipes(
+    req.headers.authorization
+  );
   res.json(recipes);
 };
 
@@ -115,23 +123,17 @@ const getMyRecipes = async (req, res) => {
   const settings = { skip, limit: Number(limit) };
   const total = await recipesService.countAllRecipes(filter);
 
-  const myRecipes = await recipesService.listRecipes({
+  const myRecipes = await recipesService.getMyRecipesService({
     filter,
     fields,
     settings,
   });
 
-  const infoMyRecipes = myRecipes.map((recipe) => ({
-    thumb: recipe.thumb,
-    title: recipe.title,
-    instructions: recipe.instructions,
-  }));
-
   res.json({
     total,
     page: Number(page),
     limit: Number(limit),
-    myRecipes: infoMyRecipes,
+    myRecipes,
   });
 };
 
@@ -189,6 +191,7 @@ const getFavoriteRecipes = async (req, res) => {
   const paginatedFavRecipes = user.favoriteRecipes.slice(skip, skip + limit);
 
   const favRecipes = paginatedFavRecipes.map((recipe) => ({
+    _id: recipe._id,
     thumb: recipe.thumb,
     title: recipe.title,
     description: recipe.description,
