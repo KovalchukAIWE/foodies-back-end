@@ -7,6 +7,7 @@ const recipeIngredientsSchema = new Schema(
       type: String,
       ref: "ingredient",
       required: true,
+      alias: "ingredient",
     },
     measure: {
       type: String,
