@@ -27,7 +27,6 @@ const signup = async (req, res) => {
   res.status(201).json({
     token,
     user: {
-      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
     },
@@ -66,7 +65,7 @@ const signIn = async (req, res) => {
 };
 
 const getCurrent = (req, res) => {
-  const { _id: id, name, email } = req.user;
+  const { _id: id, name, email, avatar } = req.user;
   res.json({
     user: {
       id,
@@ -114,6 +113,7 @@ const getUserById = async (req, res) => {
     const userRecipes = await recipesService.countAllRecipes({
       owner: requestId,
     });
+    const isFollowing = following.includes(requestId);
 
     res.json({
       user: {
@@ -123,6 +123,7 @@ const getUserById = async (req, res) => {
         email: requestUser.email,
         ownRecipesCount: userRecipes,
         followersCount: requestUser.followers.length,
+        isFollowing: isFollowing,
       },
     });
   }
@@ -151,21 +152,31 @@ const addAvatar = async (req, res) => {
 };
 
 const getUserFollowers = async (req, res) => {
-  const userFollowers = [...req.user.followers];
-  const filter = { _id: userFollowers };
-  const fields = "-token -createdAt -updatedAt -password";
+  const { _id: id, followers } = req.user;
+  const { page = 1, limit = 5 } = req.query;
 
-  const userFollowersList = await usersService.findMany(filter, fields);
-  res.json(userFollowersList);
+  const result = await usersService.getFollowersInfo(id, page, limit);
+
+  res.json({
+    total: followers.length,
+    page,
+    limit,
+    followers: result.length > 0 ? result[0].followers : [],
+  });
 };
 
 const getUserFollowings = async (req, res) => {
-  const userFollowings = [...req.user.following];
-  const filter = { _id: userFollowings };
-  const fields = "-token -createdAt -updatedAt -password";
+  const { _id: id, following } = req.user;
+  const { page = 1, limit = 5 } = req.query;
 
-  const userFollowingsList = await usersService.findMany(filter, fields);
-  res.json(userFollowingsList);
+  const result = await usersService.getFollowingsInfo(id, page, limit);
+
+  res.json({
+    total: following.length,
+    page,
+    limit,
+    followings: result.length > 0 ? result[0].followings : [],
+  });
 };
 
 const addToFollowings = async (req, res) => {
