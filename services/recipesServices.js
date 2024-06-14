@@ -68,7 +68,7 @@ export const getRecipe = async (filter, authorization = null) => {
         from: "ingredients",
         localField: "ingredients.id",
         foreignField: "_id",
-        as: "ingredients",
+        as: "ingredientDetails",
       },
     },
     {
@@ -78,15 +78,27 @@ export const getRecipe = async (filter, authorization = null) => {
             input: "$ingredients",
             as: "ingredient",
             in: {
-              _id: "$$ingredient._id",
-              name: "$$ingredient.name",
-              desc: "$$ingredient.desc",
-              img: "$$ingredient.img",
-              measure: {
-                $arrayElemAt: [
-                  "$ingredients.measure",
-                  { $indexOfArray: ["$ingredients.id", "$$ingredient._id"] },
-                ],
+              $let: {
+                vars: {
+                  ingredientDetail: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$ingredientDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$ingredient.id"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+                in: {
+                  _id: "$$ingredientDetail._id",
+                  name: "$$ingredientDetail.name",
+                  img: "$$ingredientDetail.img",
+                  measure: "$$ingredient.measure",
+                },
               },
             },
           },
@@ -218,13 +230,14 @@ export const decrementFavoriteCount = async (id) => {
   return recipe;
 };
 
-export const getMyRecipesService = async (filter, fields, settings) => {
+export const getMyRecipesService = async ({ filter, fields, settings }) => {
   const recipes = await Recipe.find(filter, fields, settings).lean();
 
-  return recipes.map((recipe) => ({
+  const myRecipes = recipes.map((recipe) => ({
     _id: recipe._id,
     thumb: recipe.thumb,
     title: recipe.title,
     instructions: recipe.instructions,
   }));
+  return myRecipes;
 };

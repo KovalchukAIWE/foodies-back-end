@@ -123,7 +123,7 @@ const getMyRecipes = async (req, res) => {
   const settings = { skip, limit: Number(limit) };
   const total = await recipesService.countAllRecipes(filter);
 
-  const myRecipes = await recipesService.getMyRecipesService({
+  const result = await recipesService.getMyRecipesService({
     filter,
     fields,
     settings,
@@ -133,7 +133,7 @@ const getMyRecipes = async (req, res) => {
     total,
     page: Number(page),
     limit: Number(limit),
-    myRecipes,
+    result,
   });
 };
 
@@ -190,7 +190,7 @@ const getFavoriteRecipes = async (req, res) => {
   const skip = (page - 1) * limit;
   const paginatedFavRecipes = user.favoriteRecipes.slice(skip, skip + limit);
 
-  const favRecipes = paginatedFavRecipes.map((recipe) => ({
+  const result = paginatedFavRecipes.map((recipe) => ({
     _id: recipe._id,
     thumb: recipe.thumb,
     title: recipe.title,
@@ -201,7 +201,7 @@ const getFavoriteRecipes = async (req, res) => {
     total,
     page: Number(page),
     limit: Number(limit),
-    recipes: favRecipes,
+    result,
   });
 };
 
