@@ -103,7 +103,7 @@ const deleteRecipe = async (req, res) => {
     await usersService.updateUserProperty(user);
   }
 
-  res.json(recipes);
+  res.json({ message: `Recipe with id ${_id} deleted successfully` });
 };
 
 const getMyRecipes = async (req, res) => {
@@ -113,6 +113,7 @@ const getMyRecipes = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const settings = { skip, limit: Number(limit) };
+  const total = await recipesService.countAllRecipes(filter);
 
   const myRecipes = await recipesService.listRecipes({
     filter,
@@ -120,8 +121,17 @@ const getMyRecipes = async (req, res) => {
     settings,
   });
 
+  const infoMyRecipes = myRecipes.map((recipe) => ({
+    thumb: recipe.thumb,
+    title: recipe.title,
+    instructions: recipe.instructions,
+  }));
+
   res.json({
-    myRecipes,
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    myRecipes: infoMyRecipes,
   });
 };
 
@@ -138,7 +148,7 @@ const addFavoriteRecipe = async (req, res) => {
 
   const recipe = await recipesService.getRecipe({ _id });
 
-  res.json(recipe);
+  res.json({ message: `Recipe with id ${_id} added to favorites` });
 };
 
 const removeRecipeFromFavorites = async (req, res) => {
@@ -162,17 +172,34 @@ const removeRecipeFromFavorites = async (req, res) => {
   await recipesService.decrementFavoriteCount(_id);
   const recipe = await recipesService.getRecipe({ _id });
 
-  res.json(recipe);
+  res.json({ message: `Recipe with id ${_id} removed from favorites` });
 };
 
 const getFavoriteRecipes = async (req, res) => {
   const { _id: owner } = req.user;
+  const { page = 1, limit = 20 } = req.query;
 
   const user = await User.findOne({ _id: owner }).populate("favoriteRecipes");
   if (!user) {
     throw HttpError(404, "User not found");
   }
-  res.json(user.favoriteRecipes);
+
+  const total = user.favoriteRecipes.length;
+  const skip = (page - 1) * limit;
+  const paginatedFavRecipes = user.favoriteRecipes.slice(skip, skip + limit);
+
+  const favRecipes = paginatedFavRecipes.map((recipe) => ({
+    thumb: recipe.thumb,
+    title: recipe.title,
+    description: recipe.description,
+  }));
+
+  res.json({
+    total,
+    page: Number(page),
+    limit: Number(limit),
+    recipes: favRecipes,
+  });
 };
 
 export default {

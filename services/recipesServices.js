@@ -23,10 +23,35 @@ export const listRecipes = async (search = {}) => {
 
 export const countAllRecipes = (filter) => Recipe.countDocuments(filter);
 
-export const getRecipe = (filter) => Recipe.findOne(filter);
+export const getRecipe = async (filter) => {
+  const recipe = await Recipe.findOne(filter)
+    .populate({
+      path: "owner",
+      select: "name avatar",
+    })
+    .lean();
+
+  return recipe;
+};
 
 export const getPopularRecipes = async () => {
-  return Recipe.find().sort({ favoriteCount: -1 }).limit(4);
+  const recipes = await Recipe.find()
+    .sort({ favoriteCount: -1 })
+    .limit(4)
+    .populate({
+      path: "owner",
+      select: "name avatar",
+    })
+    .lean();
+
+  return recipes.map((recipe) => ({
+    thumb: recipe.thumb,
+    title: recipe.title,
+    instructions: recipe.instructions,
+    favorite: recipe.favoriteCount > 0,
+    ownerName: recipe.owner.name,
+    ownerAvatar: recipe.owner.avatar,
+  }));
 };
 
 export const addRecipe = (data) => Recipe.create(data);
