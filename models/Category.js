@@ -10,6 +10,10 @@ const categorySchema = new Schema(
       type: String,
       default: null,
     },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );

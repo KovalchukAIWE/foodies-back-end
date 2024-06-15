@@ -107,7 +107,7 @@ export const getRecipe = async (filter, authorization = null) => {
     },
     {
       $project: {
-        ingredientDetails: 0, // Видаляє поле ingredientDetails з результатів
+        ingredientDetails: 0,
       },
     },
   ];

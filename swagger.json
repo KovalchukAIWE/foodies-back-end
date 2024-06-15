@@ -1339,6 +1339,11 @@
               "type": "string",
               "description": "category's image",
               "example": "https://example.com/category1.jpg"
+            },
+            "description": {
+              "type": "string",
+              "description": "category's description",
+              "example": "Experience the hearty, robust flavors of beef, expertly prepared..."
             }
           }
         }
