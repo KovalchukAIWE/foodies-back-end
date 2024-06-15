@@ -5,20 +5,13 @@
     "description": "This backend is an API for a culinary application that allows users to create, view, edit, and delete recipes, as well as manage their list of favorite recipes.",
     "version": "1.0.0"
   },
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header",
-      "description": "JWT token for accessing protected routes. Use the format: 'Bearer <token>'"
-    }
-  },
+
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000/api"
     },
     {
-      "url": "https://foodies-back-end.onrender.com/"
+      "url": "https://foodies-back-end.onrender.com/api"
     }
   ],
   "tags": [
@@ -48,10 +41,11 @@
     }
   ],
   "paths": {
-    "/signup": {
+    "/users/signup": {
       "post": {
         "summary": "User registration",
         "tags": ["users"],
+        "parameters": [],
         "requestBody": {
           "description": "Registration's object",
           "required": true,
@@ -104,6 +98,413 @@
           }
         }
       }
+    },
+    "/users/signin": {
+      "post": {
+        "summary": "User signin",
+        "tags": ["users"],
+        "parameters": [],
+        "requestBody": {
+          "description": "Signin's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully signin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SigninResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Body must have at least one field"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Email or password is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Current user",
+        "tags": ["users"],
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Email or password is wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signout": {
+      "post": {
+        "summary": "User signout",
+        "tags": ["users"],
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "User logged out successfully"
+          }
+        }
+      }
+    },
+    "/users/followers": {
+      "get": {
+        "summary": "User's followers",
+        "tags": ["users"],
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/followings": {
+      "get": {
+        "summary": "User's following",
+        "tags": ["users"],
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Not authorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Get user by ID",
+        "tags": ["users"],
+
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User ID"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSelfResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UserOtherResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/avatar": {
+      "patch": {
+        "summary": "Upload user avatar",
+        "tags": ["users"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The avatar file to upload"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "File not upload"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/follow": {
+      "patch": {
+        "summary": "Follow a user",
+        "tags": ["users"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "ID of the user to follow",
+                    "example": "60d0fe4f5311236168a109ca"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User followed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Following is already exist"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/unfollow": {
+      "patch": {
+        "summary": "Unfollow a user",
+        "tags": ["users"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "ID of the user to follow",
+                    "example": "60d0fe4f5311236168a109ca"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User unfollowed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnfollowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Follower not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -134,18 +535,21 @@
         "properties": {
           "token": {
             "type": "string",
-            "description": "JWT token for authentication"
+            "description": "JWT token for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjVjY2FhZmQxZDIwMmYzNWFhN2IwNCIsImlhdCI6MTcxODQ1MzY1OCwiZXhwIjoxNzE4NTMyODU4fQ.b7xZ4azdxARJKO_6GKA3wcoQfQXx4yENR_DGmD16ULY"
           },
           "user": {
             "type": "object",
             "properties": {
               "id": {
                 "type": "string",
-                "description": "user's id"
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
               },
               "name": {
                 "type": "string",
-                "description": "user's name"
+                "description": "user's name",
+                "example": "user1"
               },
               "email": {
                 "type": "string",
@@ -155,6 +559,332 @@
             }
           }
         }
+      },
+      "UserSignin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "user's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "user's password",
+            "example": "123456"
+          }
+        }
+      },
+      "SigninResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token for authentication",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjVjY2FhZmQxZDIwMmYzNWFhN2IwNCIsImlhdCI6MTcxODQ1MzY1OCwiZXhwIjoxNzE4NTMyODU4fQ.b7xZ4azdxARJKO_6GKA3wcoQfQXx4yENR_DGmD16ULY"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              },
+              "avatar": {
+                "type": "string",
+                "description": "user's avatar",
+                "example": "https://example.com/avatar1.jpg"
+              }
+            }
+          }
+        }
+      },
+      "CurrentResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              },
+              "avatar": {
+                "type": "string",
+                "description": "user's avatar",
+                "example": "https://example.com/avatar1.jpg"
+              }
+            }
+          }
+        }
+      },
+      "FollowersResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of followers",
+            "example": 50
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page",
+            "example": 20
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserFollower"
+            }
+          }
+        }
+      },
+      "UserFollower": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "user's id",
+            "example": "6660499c8e7a920637760496"
+          },
+          "name": {
+            "type": "string",
+            "description": "user's name",
+            "example": "123456"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "user's avatar",
+            "example": "https://example.com/avatar1.jpg"
+          },
+          "isFollowing": {
+            "type": "boolean",
+            "description": "Indicates follows users",
+            "example": true
+          },
+          "totalRecipes": {
+            "type": "integer",
+            "description": "Total number of follower's recipes",
+            "example": 12
+          },
+          "recipes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRecipe"
+            },
+
+            "description": "List of follower's recipes",
+            "example": [
+              {
+                "id": "6462a8f74c3d0ddd28897fc3",
+                "thumb": "https://example.com/recipe1.jpg"
+              },
+              {
+                "id": "6462a8f74c3d0ddd28898019",
+                "thumb": "https://example.com/recipe2.jpg"
+              }
+            ]
+          }
+        }
+      },
+      "UserRecipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "recipe's id"
+          },
+          "thumb": {
+            "type": "string",
+            "description": "URL of the recipe thumbnail"
+          }
+        }
+      },
+
+      "UserSelfResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "avatar": {
+                "type": "string",
+                "description": "user's avatar",
+                "example": "https://example.com/avatar1.jpg"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              },
+              "ownRecipesCount": {
+                "type": "integer",
+                "description": "count of own recipes",
+                "example": 1
+              },
+              "favoriteRecipesCount": {
+                "type": "integer",
+                "description": "count of favorite recipes",
+                "example": 5
+              },
+              "followersCount": {
+                "type": "integer",
+                "description": "count of followers",
+                "example": 3
+              },
+              "followingCount": {
+                "type": "integer",
+                "description": "count of following",
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "UserOtherResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "avatar": {
+                "type": "string",
+                "description": "user's avatar",
+                "example": "https://example.com/avatar1.jpg"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              },
+              "ownRecipesCount": {
+                "type": "integer",
+                "description": "count of own recipes",
+                "example": 1
+              },
+              "followersCount": {
+                "type": "integer",
+                "description": "count of followers",
+                "example": 3
+              },
+              "followingCount": {
+                "type": "integer",
+                "description": "count of following",
+                "example": 1
+              }
+            }
+          }
+        }
+      },
+      "AvatarResponse": {
+        "type": "object",
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "description": "URL of the uploaded avatar",
+            "example": "https://example.com/avatar1.jpg"
+          }
+        }
+      },
+      "FollowResponse": {
+        "type": "object",
+        "properties": {
+          "follow": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              }
+            }
+          }
+        }
+      },
+      "UnfollowResponse": {
+        "type": "object",
+        "properties": {
+          "unfollow": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
