@@ -505,6 +505,86 @@
           }
         }
       }
+    },
+    "/categories": {
+      "get": {
+        "summary": "List of categories",
+        "tags": ["categories"],
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/areas": {
+      "get": {
+        "summary": "List of categories",
+        "tags": ["areas"],
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AreasResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ingredients": {
+      "get": {
+        "summary": "List of ingredients",
+        "tags": ["ingredients"],
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngredientsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/testimonials": {
+      "get": {
+        "summary": "List of testimonials",
+        "tags": ["testimonials"],
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestimonialsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -728,7 +808,6 @@
           }
         }
       },
-
       "UserSelfResponse": {
         "type": "object",
         "properties": {
@@ -875,6 +954,108 @@
                 "format": "email",
                 "description": "user's email"
               }
+            }
+          }
+        }
+      },
+      "CategoriesResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "category's id",
+              "example": "6462a6cd4c3d0ddd28897f8e"
+            },
+            "name": {
+              "type": "string",
+              "description": "category's name",
+              "example": "Beef"
+            },
+            "image": {
+              "type": "string",
+              "description": "category's image",
+              "example": "https://example.com/category1.jpg"
+            }
+          }
+        }
+      },
+      "AreasResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "area's id",
+              "example": "6462a6f04c3d0ddd28897fa3"
+            },
+            "name": {
+              "type": "string",
+              "description": "area's name",
+              "example": "French"
+            }
+          }
+        }
+      },
+      "IngredientsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "ingredient's id",
+              "example": "640c2dd963a319ea671e382c"
+            },
+            "name": {
+              "type": "string",
+              "description": "ingredient's name",
+              "example": "Pears"
+            },
+            "desc": {
+              "type": "string",
+              "description": "ingredient's description",
+              "example": "A sweet and juicy fruit with a soft, grainy texture and thin skin."
+            },
+            "image": {
+              "type": "string",
+              "description": "ingredient's image",
+              "example": "https://example.com/ingredient1.jpg"
+            }
+          }
+        }
+      },
+      "TestimonialsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "testimonial's id",
+              "example": "647495d0c825f1570b04182f"
+            },
+            "owner": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "user's id",
+                  "example": "6660499c8e7a920637760496"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "user's name",
+                  "example": "123456"
+                }
+              }
+            },
+            "testimonial": {
+              "type": "string",
+              "description": "testimonial's text",
+              "example": "Thank you for the wonderful recipe"
             }
           }
         }
