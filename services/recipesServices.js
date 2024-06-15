@@ -237,7 +237,7 @@ export const getMyRecipesService = async ({ filter, fields, settings }) => {
     _id: recipe._id,
     thumb: recipe.thumb,
     title: recipe.title,
-    instructions: recipe.instructions,
+    description: recipe.description,
   }));
   return myRecipes;
 };
