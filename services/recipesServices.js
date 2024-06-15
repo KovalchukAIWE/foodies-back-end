@@ -105,6 +105,11 @@ export const getRecipe = async (filter, authorization = null) => {
         },
       },
     },
+    {
+      $project: {
+        ingredientDetails: 0, // Видаляє поле ingredientDetails з результатів
+      },
+    },
   ];
 
   let recipe = await Recipe.aggregate(pipeline).exec();
@@ -130,23 +135,17 @@ export const getRecipe = async (filter, authorization = null) => {
 
       return {
         ...recipe,
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
         favorite: isFavorite,
       };
     } catch (error) {
       return {
         ...recipe,
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
         favorite: false,
       };
     }
   } else {
     return {
       ...recipe,
-      ownerName: recipe.owner.name,
-      ownerAvatar: recipe.owner.avatar,
       favorite: false,
     };
   }
