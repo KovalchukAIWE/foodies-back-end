@@ -72,12 +72,8 @@
             "description": "Bad request",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Body must have at least one field"
-                    }
-                  }
+                "example": {
+                  "message": "Body must have at least one field"
                 }
               }
             }
@@ -86,12 +82,8 @@
             "description": "Conflict",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Email in use"
-                    }
-                  }
+                "example": {
+                  "message": "Email in use"
                 }
               }
             }
@@ -130,12 +122,8 @@
             "description": "Bad request",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Body must have at least one field"
-                    }
-                  }
+                "example": {
+                  "message": "Body must have at least one field"
                 }
               }
             }
@@ -144,12 +132,8 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Email or password is wrong"
-                    }
-                  }
+                "example": {
+                  "message": "Email or password is wrong"
                 }
               }
             }
@@ -179,12 +163,8 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Email or password is wrong"
-                    }
-                  }
+                "example": {
+                  "message": "Unauthorized"
                 }
               }
             }
@@ -228,12 +208,8 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Not authorized"
-                    }
-                  }
+                "example": {
+                  "message": "Unauthorized"
                 }
               }
             }
@@ -263,12 +239,8 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Not authorized"
-                    }
-                  }
+                "example": {
+                  "message": "Unauthorized"
                 }
               }
             }
@@ -315,12 +287,8 @@
             "description": "User not found",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Not found"
-                    }
-                  }
+                "example": {
+                  "message": "Not found"
                 }
               }
             }
@@ -365,12 +333,8 @@
             "description": "Bad request",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "File not upload"
-                    }
-                  }
+                "example": {
+                  "message": "File not upload"
                 }
               }
             }
@@ -415,12 +379,8 @@
             "description": "Bad request",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Following is already exist"
-                    }
-                  }
+                "example": {
+                  "message": "Following is already exist"
                 }
               }
             }
@@ -429,12 +389,8 @@
             "description": "User not found",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Not found"
-                    }
-                  }
+                "example": {
+                  "message": "Not found"
                 }
               }
             }
@@ -479,12 +435,8 @@
             "description": "Bad request",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Follower not found"
-                    }
-                  }
+                "example": {
+                  "message": "Follower not found"
                 }
               }
             }
@@ -493,12 +445,8 @@
             "description": "User not found",
             "content": {
               "application/json": {
-                "examples": {
-                  "badRequestExample": {
-                    "value": {
-                      "message": "Not found"
-                    }
-                  }
+                "example": {
+                  "message": "Not found"
                 }
               }
             }
@@ -579,6 +527,420 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TestimonialsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes": {
+      "get": {
+        "summary": "list of recipes by filter",
+        "tags": ["recipes"],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter recipes by category"
+          },
+          {
+            "name": "ingredient",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter recipes by ingredient"
+          },
+          {
+            "name": "area",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter recipes by area"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Number of items per page",
+            "required": false
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipesFilterResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create recipe",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "New recipe",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeCreate"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "File is required"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/popular": {
+      "get": {
+        "summary": "list of popular recipes",
+        "tags": ["recipes"],
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopularRecipesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/{id}": {
+      "get": {
+        "summary": "Recipe by id",
+        "tags": ["recipes"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Recipe ID"
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeByIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a recipe",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the recipe to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe with id {id} deleted successfully"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/my": {
+      "get": {
+        "summary": "list of user's recipes",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Number of items per page",
+            "required": false
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MyRecipesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/{id}/favorite": {
+      "post": {
+        "summary": "Add recipe to favorite",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the recipe to favorite",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe with id ${_id} added to favorites"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove recipe from favorite",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the recipe to remove from favorite",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe with id ${_id} removed from favorites"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipe not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Recipe not found"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipes/favorites": {
+      "get": {
+        "summary": "list of favorite recipes",
+        "tags": ["recipes"],
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Number of items per page",
+            "required": false
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteRecipesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Not found"
                 }
               }
             }
@@ -1056,6 +1418,454 @@
               "type": "string",
               "description": "testimonial's text",
               "example": "Thank you for the wonderful recipe"
+            }
+          }
+        }
+      },
+      "RecipesFilterResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of filtered recipes",
+            "example": 50
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page",
+            "example": 20
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "recipe's id",
+                  "example": "6462a8f74c3d0ddd28897fcd"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "recipe's title",
+                  "example": "Battenberg Cake"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "recipe's description",
+                  "example": "A classic British cake made with almond sponge cake"
+                },
+                "thumb": {
+                  "type": "string",
+                  "description": "recipe's image",
+                  "example": "https://example.com/recipe1.jpg"
+                },
+                "ownerName": {
+                  "type": "string",
+                  "description": "user's name",
+                  "example": "123456"
+                },
+                "ownerAvatar": {
+                  "type": "string",
+                  "description": "user's avatar",
+                  "example": "https://example.com/avatar1.jpg"
+                },
+                "favorite": {
+                  "type": "boolean",
+                  "description": "Indicates recipe is a favorite",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "PopularRecipesResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "recipe's id",
+              "example": "6462a8f74c3d0ddd28897fcd"
+            },
+            "thumb": {
+              "type": "string",
+              "description": "recipe's image",
+              "example": "https://example.com/recipe1.jpg"
+            },
+            "title": {
+              "type": "string",
+              "description": "recipe's title",
+              "example": "Battenberg Cake"
+            },
+            "description": {
+              "type": "string",
+              "description": "recipe's description",
+              "example": "A classic British cake made with almond sponge cake"
+            },
+            "favorite": {
+              "type": "boolean",
+              "description": "Indicates recipe is a favorite",
+              "example": true
+            },
+            "ownerName": {
+              "type": "string",
+              "description": "user's name",
+              "example": "123456"
+            },
+            "ownerAvatar": {
+              "type": "string",
+              "description": "user's avatar",
+              "example": "https://example.com/avatar1.jpg"
+            }
+          }
+        }
+      },
+      "RecipeByIdResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "recipe's id",
+            "example": "6462a8f74c3d0ddd28897fcd"
+          },
+          "title": {
+            "type": "string",
+            "description": "recipe's title",
+            "example": "Battenberg Cake"
+          },
+          "category": {
+            "type": "string",
+            "description": "recipe's category",
+            "example": "Dessert"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id",
+                "example": "6660499c8e7a920637760496"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name",
+                "example": "123456"
+              },
+              "avatar": {
+                "type": "string",
+                "description": "user's avatar",
+                "example": "https://example.com/avatar1.jpg"
+              }
+            }
+          },
+          "area": {
+            "type": "string",
+            "description": "recipe's area",
+            "example": "British"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "recipe's instructions",
+            "example": "Heat oven to 180C/160C fan/gas 4 and line the base and sides of a 20cm square..."
+          },
+          "description": {
+            "type": "string",
+            "description": "recipe's description",
+            "example": "A classic British cake made with almond sponge cake..."
+          },
+          "thumb": {
+            "type": "string",
+            "description": "recipe's image",
+            "example": "https://example.com/recipe1.jpg"
+          },
+          "time": {
+            "type": "string",
+            "description": "time cooking",
+            "example": "60"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "ingredient's id",
+                  "example": "640c2dd963a319ea671e382c"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "ingredient's name",
+                  "example": "Pears"
+                },
+                "image": {
+                  "type": "string",
+                  "description": "ingredient's image",
+                  "example": "https://example.com/ingredient1.jpg"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "ingredient's measure",
+                  "example": "3 Medium"
+                }
+              }
+            }
+          },
+
+          "favoriteCount": {
+            "type": "integer",
+            "description": "Total number of favorite recipes",
+            "example": 12
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Indicates recipe is a favorite",
+            "example": true
+          }
+        }
+      },
+      "RecipeCreate": {
+        "type": "object",
+        "required": [
+          "title",
+          "category",
+          "instructions",
+          "description",
+          "time",
+          "ingredients",
+          "thumb"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "recipe's title",
+            "example": "Pecan pie"
+          },
+          "category": {
+            "type": "string",
+            "description": "recipe's category",
+            "example": "Dessert"
+          },
+          "area": {
+            "type": "string",
+            "description": "recipe's area",
+            "example": "British"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "recipe's instructions",
+            "example": "Heat oven to 180C/160C fan/gas 4 and line the base and sides of a 20cm square..."
+          },
+          "description": {
+            "type": "string",
+            "description": "recipe's description",
+            "example": "A classic British cake made with almond sponge cake..."
+          },
+          "thumb": {
+            "type": "string",
+            "format": "binary",
+            "description": "recipe's image"
+          },
+          "time": {
+            "type": "string",
+            "description": "time cooking",
+            "example": "60"
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "list of ingredients for recipe",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "ingredient's id",
+                  "example": "640c2dd963a319ea671e382c"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "ingredient's measure",
+                  "example": "3 Medium"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RecipeCreateResponse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "recipe's title",
+            "example": "Battenberg Cake"
+          },
+          "category": {
+            "type": "string",
+            "description": "recipe's category",
+            "example": "Dessert"
+          },
+          "owner": {
+            "type": "string",
+            "description": "user's id",
+            "example": "6660499c8e7a920637760496"
+          },
+          "area": {
+            "type": "string",
+            "description": "recipe's area",
+            "example": "British"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "recipe's instructions",
+            "example": "Heat oven to 180C/160C fan/gas 4 and line the base and sides of a 20cm square..."
+          },
+          "description": {
+            "type": "string",
+            "description": "recipe's description",
+            "example": "A classic British cake made with almond sponge cake..."
+          },
+          "thumb": {
+            "type": "string",
+            "description": "recipe's image",
+            "example": "https://example.com/recipe1.jpg"
+          },
+          "time": {
+            "type": "string",
+            "description": "time cooking",
+            "example": "60"
+          },
+          "favoriteCount": {
+            "type": "integer",
+            "description": "Total number of favorite recipes",
+            "example": 0
+          },
+          "id": {
+            "type": "string",
+            "description": "recipe's id",
+            "example": "6462a8f74c3d0ddd28897fcd"
+          },
+
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "ingredient's id",
+                  "example": "640c2dd963a319ea671e382c"
+                },
+                "measure": {
+                  "type": "string",
+                  "description": "ingredient's measure",
+                  "example": "3 Medium"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MyRecipesResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of filtered recipes",
+            "example": 50
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page",
+            "example": 20
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "recipe's id",
+                  "example": "6462a8f74c3d0ddd28897fcd"
+                },
+                "thumb": {
+                  "type": "string",
+                  "description": "recipe's image",
+                  "example": "https://example.com/recipe1.jpg"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "recipe's title",
+                  "example": "Battenberg Cake"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "recipe's description",
+                  "example": "A classic British cake made with almond sponge cake"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FavoriteRecipesResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of filtered recipes",
+            "example": 50
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page",
+            "example": 20
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "recipe's id",
+                  "example": "6462a8f74c3d0ddd28897fcd"
+                },
+                "thumb": {
+                  "type": "string",
+                  "description": "recipe's image",
+                  "example": "https://example.com/recipe1.jpg"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "recipe's title",
+                  "example": "Battenberg Cake"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "recipe's description",
+                  "example": "A classic British cake made with almond sponge cake"
+                }
+              }
             }
           }
         }

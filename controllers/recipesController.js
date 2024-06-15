@@ -159,7 +159,7 @@ const removeRecipeFromFavorites = async (req, res) => {
 
   const favIndex = favList.findIndex((el) => el.toString() === _id);
   if (favIndex < 0) {
-    throw HttpError(400, "Recipe not found");
+    throw HttpError(404, "Recipe not found");
   }
   favList.splice(favIndex, 1);
   const result = await usersService.updateUser(
