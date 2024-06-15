@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Foodies-back-end",
+    "description": "This backend is an API for a culinary application that allows users to create, view, edit, and delete recipes, as well as manage their list of favorite recipes.",
+    "version": "1.0.0"
+  },
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT token for accessing protected routes. Use the format: 'Bearer <token>'"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://foodies-back-end.onrender.com/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Operations related to user management"
+    },
+    {
+      "name": "categories",
+      "description": "Operations related to recipe categories"
+    },
+    {
+      "name": "areas",
+      "description": "Operations related to geographic areas of recipes"
+    },
+    {
+      "name": "ingredients",
+      "description": "Operations related to recipe ingredients"
+    },
+    {
+      "name": "testimonials",
+      "description": "Operations related to user testimonials"
+    },
+    {
+      "name": "recipes",
+      "description": "Operations related to recipe management"
+    }
+  ],
+  "paths": {
+    "/signup": {
+      "post": {
+        "summary": "User registration",
+        "tags": ["users"],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Body must have at least one field"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "badRequestExample": {
+                    "value": {
+                      "message": "Email in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistration": {
+        "type": "object",
+        "required": ["email", "password", "name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "user's name",
+            "example": "user1"
+          },
+          "email": {
+            "type": "string",
+            "description": "user's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "user's password",
+            "example": "123456"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token for authentication"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "user's id"
+              },
+              "name": {
+                "type": "string",
+                "description": "user's name"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "user's email"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
