@@ -62,7 +62,7 @@ export const getFollowersInfo = (id, page, limit) => {
         pipeline: [
           { $match: { $expr: { $eq: ["$owner", "$$followerId"] } } },
           { $limit: 4 },
-          { $project: { thumb: 1 } },
+          { $project: { thumb: 1, title: 1 } },
         ],
         as: "recipes",
       },
@@ -152,7 +152,7 @@ export const getFollowingsInfo = (id, page, limit) => {
         pipeline: [
           { $match: { $expr: { $eq: ["$owner", "$$followingId"] } } },
           { $limit: 4 },
-          { $project: { thumb: 1 } },
+          { $project: { thumb: 1, title: 1 } },
         ],
         as: "recipes",
       },
