@@ -8,10 +8,10 @@
 
   "servers": [
     {
-      "url": "http://localhost:3000/api"
+      "url": "https://foodies-back-end.onrender.com/api"
     },
     {
-      "url": "https://foodies-back-end.onrender.com/api"
+      "url": "http://localhost:3000/api"
     }
   ],
   "tags": [
@@ -1470,15 +1470,25 @@
                   "description": "recipe's image",
                   "example": "https://example.com/recipe1.jpg"
                 },
-                "ownerName": {
-                  "type": "string",
-                  "description": "user's name",
-                  "example": "123456"
-                },
-                "ownerAvatar": {
-                  "type": "string",
-                  "description": "user's avatar",
-                  "example": "https://example.com/avatar1.jpg"
+                "owner": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "user's id",
+                      "example": "6660499c8e7a920637760496"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "user's name",
+                      "example": "123456"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "description": "user's avatar",
+                      "example": "https://example.com/avatar1.jpg"
+                    }
+                  }
                 },
                 "favorite": {
                   "type": "boolean",
@@ -1515,20 +1525,30 @@
               "description": "recipe's description",
               "example": "A classic British cake made with almond sponge cake"
             },
+            "owner": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "user's id",
+                  "example": "6660499c8e7a920637760496"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "user's name",
+                  "example": "123456"
+                },
+                "avatar": {
+                  "type": "string",
+                  "description": "user's avatar",
+                  "example": "https://example.com/avatar1.jpg"
+                }
+              }
+            },
             "favorite": {
               "type": "boolean",
               "description": "Indicates recipe is a favorite",
               "example": true
-            },
-            "ownerName": {
-              "type": "string",
-              "description": "user's name",
-              "example": "123456"
-            },
-            "ownerAvatar": {
-              "type": "string",
-              "description": "user's avatar",
-              "example": "https://example.com/avatar1.jpg"
             }
           }
         }
