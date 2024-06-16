@@ -28,8 +28,7 @@ export const listRecipes = async (search = {}, authorization = null) => {
         title: recipe.title,
         description: recipe.description,
         thumb: recipe.thumb,
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
+        owner: recipe.owner,
         favorite: favoriteRecipesSet.has(recipe._id.toString()),
       }));
     } catch (error) {
@@ -38,8 +37,7 @@ export const listRecipes = async (search = {}, authorization = null) => {
         title: recipe.title,
         description: recipe.description,
         thumb: recipe.thumb,
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
+        owner: recipe.owner,
         favorite: false,
       }));
     }
@@ -49,8 +47,7 @@ export const listRecipes = async (search = {}, authorization = null) => {
       title: recipe.title,
       description: recipe.description,
       thumb: recipe.thumb,
-      ownerName: recipe.owner.name,
-      ownerAvatar: recipe.owner.avatar,
+      owner: recipe.owner,
       favorite: false,
     }));
   }
@@ -175,9 +172,8 @@ export const getPopularRecipes = async (authorization = null) => {
         thumb: recipe.thumb,
         title: recipe.title,
         description: recipe.description,
+        owner: recipe.owner,
         favorite: favoriteRecipesSet.has(recipe._id.toString()),
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
       }));
     } catch (error) {
       return recipes.map((recipe) => ({
@@ -185,9 +181,8 @@ export const getPopularRecipes = async (authorization = null) => {
         thumb: recipe.thumb,
         title: recipe.title,
         description: recipe.description,
+        owner: recipe.owner,
         favorite: false,
-        ownerName: recipe.owner.name,
-        ownerAvatar: recipe.owner.avatar,
       }));
     }
   } else {
@@ -196,9 +191,8 @@ export const getPopularRecipes = async (authorization = null) => {
       thumb: recipe.thumb,
       title: recipe.title,
       description: recipe.description,
+      owner: recipe.owner,
       favorite: false,
-      ownerName: recipe.owner.name,
-      ownerAvatar: recipe.owner.avatar,
     }));
   }
 };
