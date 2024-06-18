@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 
 export const findUser = (filter) => User.findOne(filter);
@@ -24,7 +25,7 @@ export const findMany = (filter = {}, fields = "") => {
   return User.find(filter, fields);
 };
 
-export const getFollowersInfo = (id, page, limit) => {
+export const getFollowersInfo = (id, page, limit, following) => {
   return User.aggregate([
     {
       $match: { _id: id },
@@ -81,7 +82,7 @@ export const getFollowersInfo = (id, page, limit) => {
     {
       $addFields: {
         "followerDetails.isFollowing": {
-          $in: ["$followerDetails._id", "$following"],
+          $in: ["$followerDetails._id", following],
         },
         "followerDetails.recipes": "$recipes",
         "followerDetails.totalRecipes": {
