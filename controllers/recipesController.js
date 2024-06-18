@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import mongoose from "mongoose";
 import * as recipesService from "../services/recipesServices.js";
 import * as usersService from "../services/usersServices.js";
 import User from "../models/User.js";
@@ -116,13 +117,19 @@ const deleteRecipe = async (req, res) => {
 
 const getMyRecipes = async (req, res) => {
   const { _id: owner } = req.user;
-  const filter = { owner };
+  const { id: requestOwner } = req.params;
+  let filter = { owner };
   const fields = "-createdAt -updatedAt";
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
   const settings = { skip, limit: Number(limit) };
-  const total = await recipesService.countAllRecipes(filter);
 
+  if (owner.toString() !== requestOwner) {
+    const formatId = new mongoose.Types.ObjectId(requestOwner);
+    filter = { owner: formatId };
+  }
+  
+  const total = await recipesService.countAllRecipes(filter);
   const result = await recipesService.getMyRecipesService({
     filter,
     fields,
