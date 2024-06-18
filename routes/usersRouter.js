@@ -31,7 +31,7 @@ usersRouter.get("/current", authenticate, usersControllers.getCurrent);
 
 usersRouter.post("/signout", authenticate, usersControllers.signOut);
 
-usersRouter.get("/followers", authenticate, usersControllers.getUserFollowers);
+usersRouter.get("/:id/followers", authenticate, usersControllers.getUserFollowers);
 
 usersRouter.get(
   "/followings",

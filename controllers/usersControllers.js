@@ -154,16 +154,34 @@ const addAvatar = async (req, res) => {
 
 const getUserFollowers = async (req, res) => {
   const { _id: id, followers } = req.user;
+  const { id: requestId } = req.params;
   const { page = 1, limit = 5 } = req.query;
 
-  const result = await usersService.getFollowersInfo(id, page, limit);
+  if (id.toString() === requestId) {
+    const result = await usersService.getFollowersInfo(id, page, limit);
 
-  res.json({
-    total: followers.length,
-    page,
-    limit,
-    result: result.length > 0 ? result[0].followers : [],
-  });
+    res.json({
+      total: followers.length,
+      page,
+      limit,
+      result: result.length > 0 ? result[0].followers : [],
+    });
+  } else {
+    const requestUser = await usersService.findUser({ _id: requestId });
+    const requestUserResult = await usersService.getFollowersInfo(
+      requestUser._id,
+      page,
+      limit
+    );
+
+    res.json({
+      total: requestUser.followers.length,
+      page,
+      limit,
+      result:
+        requestUserResult.length > 0 ? requestUserResult[0].followers : [],
+    });
+  }
 };
 
 const getUserFollowings = async (req, res) => {
