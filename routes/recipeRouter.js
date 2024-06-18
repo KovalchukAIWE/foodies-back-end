@@ -17,7 +17,7 @@ recipeRouter.get(
   authenticate,
   recipesController.getFavoriteRecipes
 );
-recipeRouter.get("/my", authenticate, recipesController.getMyRecipes);
+recipeRouter.get("/:id/my", authenticate, isValidId, recipesController.getMyRecipes);
 recipeRouter.get("/:id", isValidId, recipesController.getRecipeById);
 
 recipeRouter.post(
