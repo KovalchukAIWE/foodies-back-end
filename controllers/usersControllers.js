@@ -166,7 +166,7 @@ const getUserFollowers = async (req, res) => {
       limit,
       result: result.length > 0 ? result[0].followers : [],
     });
-    
+
   } else {
     const requestUser = await usersService.findUser({ _id: requestId });
     const requestUserResult = await usersService.getFollowersInfo(
@@ -203,6 +203,10 @@ const getUserFollowings = async (req, res) => {
 const addToFollowings = async (req, res) => {
   const { _id, following: followList } = req.user;
   const { id } = req.body;
+
+  if(_id.toString()===id){
+    throw HttpError(400, "You can't follow yourself");
+  }
 
   if (followList.includes(id)) {
     throw HttpError(400, "Following is already exist");
