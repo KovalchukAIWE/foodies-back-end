@@ -186,11 +186,41 @@
         }
       }
     },
-    "/users/followers": {
+    "/users/:id/followers": {
       "get": {
         "summary": "User's followers",
         "tags": ["users"],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User ID"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Number of items per page",
+            "required": false
+          }
+        ],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -221,7 +251,28 @@
       "get": {
         "summary": "User's following",
         "tags": ["users"],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number",
+            "required": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Number of items per page",
+            "required": false
+          }
+        ],
         "security": [{ "Bearer": [] }],
 
         "responses": {
@@ -746,12 +797,21 @@
         }
       }
     },
-    "/recipes/my": {
+    "/recipes/:id/my": {
       "get": {
         "summary": "list of user's recipes",
         "tags": ["recipes"],
         "security": [{ "Bearer": [] }],
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Recipe ID"
+          },
           {
             "name": "page",
             "in": "query",
@@ -1099,7 +1159,7 @@
           "limit": {
             "type": "integer",
             "description": "Items per page",
-            "example": 20
+            "example": 5
           },
           "result": {
             "type": "array",
